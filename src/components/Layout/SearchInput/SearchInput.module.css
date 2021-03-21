@@ -5,6 +5,7 @@
     background-color: var(--background-color-dark);
     border-radius: 0.5rem;
     padding-left: 1rem;
+    color: var(--text-color-secondary);
 }
 
 .input {
@@ -13,4 +14,9 @@
     background-color: transparent;
     padding: 1rem;
     width: 100%;
+    outline: none;
+}
+
+.input::placeholder {
+    color: var(--text-color-secondary);
 }

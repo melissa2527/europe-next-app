@@ -1,12 +1,15 @@
 import Layout from '../components/Layout/Layout';
 import SearchInput from '../components/Layout/SearchInput/SearchInput';
+import styles from '../styles/Home.module.css';
+import CountriesTable from '../components/Layout/CountriesTable/CountriesTable';
 
 export default function Home({europe}) {
   console.log(europe)
   return (
    <Layout>
-     <div >Found {europe.length} Countries</div>
+     <div className={styles.countries}>Found {europe.length} Countries</div>
      <SearchInput placeholder='Filter Countries'/>
+     <CountriesTable countries={europe} />
    </Layout>
   )
 }
