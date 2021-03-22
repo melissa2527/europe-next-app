@@ -1,52 +1,81 @@
-import React from 'react'
+import React, {useState} from 'react'
 // import { StylesProvider } from '@material-ui/core';
 import styles from './CountriesTable.module.css';
 import KeyboardArrowDownRounded from '@material-ui/icons/KeyboardArrowDownRounded';
+import KeyboardArrowUpRounded from '@material-ui/icons/KeyboardArrowDownRounded';
+import Link from 'next/link';
 
-
-const orderBy = (countries, direction) => {
+const orderBy = (countries, value, direction) => {
     if (direction === 'asc') {
-    return [...countries].sort((a, b) => a.population > b.population ? 1 : - 1)
+    return [...countries].sort((a, b) => a[value] > b[value] ? 1 : - 1)
     }
     if (direction === 'desc') {
-        return [...countries].sort((a, b) => a.population > b.population ? -1 : 1)
+        return [...countries].sort((a, b) => a[value] > b[value] ? -1 : 1)
     }
     return countries;
 }
 
+const SortArrow = ({direction}) => {
+    if (!direction) {
+        return <></>;
+    }
+    if (direction === 'desc') {
+        return (
+            <div className={styles.heading_arrow}>
+                <KeyboardArrowDownRounded color='inherit'/>
+            </div>
+        )
+    } else {
+        return (
+            <div className={styles.heading_arrow}>
+                <KeyboardArrowUpRounded color='inherit'/>
+            </div>
+        )
+    }
+}
+
 const CountriesTable = ({countries}) => {
+    const [direction, setDirection] = useState();
+    const [value, setValue] = useState();
 
-    const orderedCountries = orderBy(countries, 'desc');
+    const orderedCountries = orderBy(countries, value, direction);
 
-    const SortArrow = ({direction}) => {
+    const switchDirection = () => {
         if (!direction) {
-            return <></>;
+            setDirection('desc');
+        } else if (direction === 'desc') {
+            setDirection('asc');
+        } else {
+            setDirection(null);
         }
+    }
+
+    const setValueAndDirection = (value) => {
+        switchDirection();
+        setValue(value);
     }
 
     return (
         <div>
             <div className={styles.heading}>
-                <button className={styles.heading_name}>
+                <button className={styles.heading_name} onClick={() => setValueAndDirection('name')}>
                     <div>Name: </div>
-                    <div className={styles.heading_arrow}>
-                        <KeyboardArrowDownRounded color='inherit'/>
-                    </div>
+                    <SortArrow />
                 </button>
 
-                <button className={styles.heading_population}>
+                <button className={styles.heading_population} onClick={() => setValueAndDirection('population')}>
                     <div>Population: </div>
-                    <div className={styles.heading_arrow}>
-                        <KeyboardArrowDownRounded color='inherit'/>
-                    </div>
+                    <SortArrow direction={direction} />
                 </button>
             </div>
 
-            {orderedCountries.map(c => 
+            {orderedCountries.map(country => 
+                <Link href={`/country/${country.alpha3Code}`}>
                 <div className={styles.row}>
-                    <div className={styles.name}>{c.name}</div>
-                    <div className={styles.population}>{c.population}</div>
+                    <div className={styles.name}>{country.name}</div>
+                    <div className={styles.population}>{country.population}</div>
                 </div>
+                </Link>
             )}
         </div>
     )
